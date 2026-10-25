@@ -15,7 +15,7 @@ function render(providers, projections = {}, missingHook = false, options = {}) 
     useRef: (current) => ({ current }),
     useState(initial) {
       let value = initial && typeof initial === 'object' && 'providers' in initial
-        ? { busy: false, providers, error: '' } : initial;
+        ? { provider: options.stateProvider ?? initial.provider, busy: false, providers, unsupported: options.unsupported ?? '', error: options.error ?? '' } : initial;
       return [value, (next) => { value = typeof next === 'function' ? next(value) : next; stateChanges.push(value); }];
     },
   };
@@ -40,7 +40,7 @@ function render(providers, projections = {}, missingHook = false, options = {}) 
       bind(ns) {
         return (key, params = {}) => Object.entries(params).reduce(
           (text, [name, value]) => text.replaceAll(`{${name}}`, String(value)),
-          dictionaries[ns]?.zh[key] || key,
+          dictionaries[ns]?.[options.language || 'zh'][key] || key,
         );
       },
     },
@@ -57,24 +57,38 @@ function render(providers, projections = {}, missingHook = false, options = {}) 
     nodes.push(element);
     visit(element.props.children);
   }
-  visit(body(missingHook ? {} : { useProjection: (key) => projections[key] }));
+  const selection = projections.modelSelection === undefined
+    ? { modelSelection: { next: { provider: 'kimi-coding', model: 'k3' } } }
+    : projections.modelSelection === null ? {} : { modelSelection: projections.modelSelection };
+  const allProjections = { ...selection, ...projections };
+  visit(body(missingHook ? {} : { useProjection: (key) => allProjections[key] }));
   return { nodes, text: strings.join('\n'), effects, stateChanges, timers };
 }
 
-test('plan quotas show used and remaining percentages, exact reset and account scope', () => {
+test('plan quotas show used percentages, exact reset and account scope, without redundant lines', () => {
   const { nodes, text } = render([{
     id: 'kimi', label: 'Kimi Code', status: 'ok', fetchedAt: Date.now(),
     windows: [{ id: '5h', usedPercent: 12.5, resetAt: '2099-01-01T12:00:00Z', used: 25, limit: 200, remaining: 175 }],
   }]);
-  assert.match(text, /模型额度与余额/);
-  assert.match(text, /账号层面的套餐额度和 API 余额/);
+  assert.match(text, /当前模型用量/);
+  assert.match(text, /服务商账号层面的套餐额度/);
+  assert.match(text, /当前模型：k3/);
   assert.match(text, /已用 12\.5%/);
-  assert.match(text, /剩余 87\.5%/);
   assert.match(text, /重置：/);
   assert.match(text, /距重置/);
-  assert.match(text, /已用 25 \/ 200/);
-  assert.match(text, /剩余 175/);
+  // Redundant lines (remaining %, used/limit counts, conflict warnings) are not shown.
+  assert.doesNotMatch(text, /剩余 87\.5%|已用 25 \/ 200|剩余 175|不一致/);
   assert.equal(nodes.find((n) => n.props.role === 'progressbar').props['aria-valuenow'], 12.5);
+});
+
+test('reset dates follow the interface language instead of the browser locale', () => {
+  const { text } = render([{
+    id: 'kimi', label: 'Kimi Code', status: 'ok', fetchedAt: Date.now(),
+    windows: [{ id: '5h', usedPercent: 12.5, resetAt: '2099-01-01T12:00:00Z' }],
+  }]);
+  const expected = new Date('2099-01-01T12:00:00Z').toLocaleString('zh-CN', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', timeZoneName: 'short' });
+  assert.ok(text.includes(`重置：${expected}`));
+  assert.doesNotMatch(text, /Jan|AM|PM/);
 });
 
 test('zero usage remains zero and an unknown quota is never rendered as zero', () => {
@@ -86,19 +100,19 @@ test('zero usage remains zero and an unknown quota is never rendered as zero', (
   assert.equal(meters.length, 1);
   assert.equal(meters[0].props['aria-valuenow'], 0);
   assert.equal(meters[0].props.children.props.style.width, '0%');
-  assert.match(text, /剩余 100%/);
+  assert.match(text, /已用 0%/);
   assert.match(text, /服务商未提供使用比例/);
   assert.match(text, /服务商未提供重置时间/);
   assert.doesNotMatch(text, /NaN|Infinity/);
 });
 
-test('percentage precision keeps displayed used and remaining values consistent', () => {
+test('percentage precision keeps the used value exact without repeating it as a remaining line', () => {
   const { text } = render([{
     id: 'kimi', label: 'Kimi Code', status: 'ok', fetchedAt: Date.now(),
     windows: [{ id: 'month-total', usedPercent: 4.35 }],
   }]);
   assert.match(text, /已用 4\.35%/);
-  assert.match(text, /剩余 95\.65%/);
+  assert.doesNotMatch(text, /剩余 95\.65%/);
 });
 
 test('DeepSeek balances retain decimal precision and separate currencies without quota meters', () => {
@@ -149,13 +163,51 @@ test('adding DeepSeek keeps GLM and Kimi quota cards and missing-key guidance in
   assert.doesNotMatch(text, /CNY 0|USD 0/);
 });
 
-test('invalid pressure cannot show NaN and quotas survive missing projection hooks', () => {
-  const { text } = render([], { contextPressure: { projectedTokens: 0, contextWindow: 0 } });
-  assert.doesNotMatch(text, /NaN|Infinity/);
-  const missing = render([{ id: 'kimi', label: 'Kimi Code', status: 'no-key' }], {}, true).text;
-  assert.match(missing, /Kimi Code/);
-  assert.match(missing, /模型设置/);
-  assert.match(missing, /Token 统计暂不可用/);
+test('missing projection hooks show guidance without querying all accounts', () => {
+  const missing = render([{ id: 'kimi', label: 'Kimi Code', status: 'no-key' }], {}, true);
+  assert.match(missing.text, /未能读取会话投影/);
+  assert.doesNotMatch(missing.text, /Kimi Code|GLM Coding Plan|上下文|Token 用量|轮次/);
+  assert.equal(missing.effects.length, 0);
+});
+
+test('without a selected model the panel asks for one instead of listing every account', () => {
+  const { text } = render([], { modelSelection: null });
+  assert.match(text, /选择模型后/);
+  assert.doesNotMatch(text, /Kimi Code|GLM Coding Plan/);
+});
+
+test('an empty provider does not query every account', () => {
+  const ui = render([], { modelSelection: { next: { provider: '', model: 'pending' } } });
+  assert.match(ui.text, /选择模型后/);
+  assert.equal(ui.effects.length, 0);
+});
+
+test('switching providers cannot display the previous provider snapshot or its errors', () => {
+  const ui = render([{ id: 'kimi', label: 'Previous Kimi account', status: 'ok', windows: [{ id: '5h', usedPercent: 80 }] }], {
+    modelSelection: { next: { provider: 'zai', model: 'glm-selected' } },
+  }, false, { stateProvider: 'kimi-coding', error: 'Previous provider error', unsupported: 'previous' });
+  assert.match(ui.text, /glm-selected/);
+  assert.match(ui.text, /获取中/);
+  assert.doesNotMatch(ui.text, /Previous|已用 80%|暂不提供/);
+  assert.equal(ui.nodes.filter((node) => node.props['data-usage-provider']).length, 0);
+});
+
+test('last-used selection is used when the next model is not set', async () => {
+  const calls = [];
+  const ui = render([], { modelSelection: { lastUsed: { provider: 'deepseek-official', model: 'deepseek-selected' } } }, false, {
+    rpcCall: async (...args) => { calls.push(args); return { ok: true, value: { providers: [] } }; },
+  });
+  const cleanup = ui.effects[0]();
+  assert.match(ui.text, /deepseek-selected/);
+  assert.equal(calls[0][2].provider, 'deepseek-official');
+  cleanup();
+  await new Promise(setImmediate);
+});
+
+test('DeepSeek account login explains its unsupported quota instead of showing API-key balances', () => {
+  const ui = render([], { modelSelection: { next: { provider: 'deepseek-account', model: 'deepseek-login' } } }, false, { unsupported: 'deepseek-account' });
+  assert.match(ui.text, /暂不支持查询 DeepSeek 账号登录额度/);
+  assert.doesNotMatch(ui.text, /总可用余额|CNY|USD/);
 });
 
 test('an elapsed reset is labelled pending upstream refresh without fabricating a new time', () => {
@@ -184,6 +236,7 @@ test('refreshes do not overlap, can run again after completion, and cancel on un
   assert.equal(calls[0].args[3].aborted, false);
   refresh.props.onClick();
   assert.equal(calls.length, 1, 'an in-flight refresh must not start another request');
+  assert.equal(calls[0].args[2].provider, 'kimi-coding', 'the request carries the selected model provider');
   calls[0].resolve({ ok: true, value: { providers: [] } });
   await new Promise(setImmediate);
   assert.equal(ui.stateChanges.at(-1).busy, false);

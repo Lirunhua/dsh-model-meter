@@ -309,6 +309,11 @@ test("real Cordis mounts after dependencies arrive and disposes its exact RPC ro
 		assert.equal(result.rpcId, envelope.rpcId);
 		assert.ok(result.result.ok);
 		assert.ok(result.result.value.providers.every((value) => value.status === "ok"));
+		const narrowed = await (await route.fetch(request({ ...envelope, payload: { provider: "zai" } }))).json();
+		assert.deepEqual(narrowed.result.value.providers.map((value) => value.id), ["glm"]);
+		const unknown = await (await route.fetch(request({ ...envelope, payload: { provider: "openai" } }))).json();
+		assert.deepEqual(unknown.result.value.providers, []);
+		assert.equal(unknown.result.value.unsupportedProvider, "openai");
 		assert.equal((await route.fetch(request({ ...envelope, method: "wrong" }))).status, 400);
 		assert.equal((await route.fetch(request(envelope, "text/plain"))).status, 415);
 		await fiber.dispose();
@@ -317,4 +322,44 @@ test("real Cordis mounts after dependencies arrive and disposes its exact RPC ro
 		globalThis.fetch = previousFetch;
 		await ctx.fiber.dispose();
 	}
+});
+
+test("a selected model provider narrows the query to its own usage source", async () => {
+	const urls = [];
+	const service = makeService({ fetchImpl: async (url) => { urls.push(url); return responseFor(url); } });
+	const kimi = await service.snapshot({ provider: "kimi-coding" });
+	assert.deepEqual(kimi.providers.map((value) => value.id), ["kimi"]);
+	assert.equal(urls.length, 1);
+	assert.match(urls[0], /kimi\.com/u);
+	const glm = await service.snapshot({ provider: "zai" });
+	assert.deepEqual(glm.providers.map((value) => value.id), ["glm"]);
+	assert.equal(urls.length, 2);
+	const deepseek = await service.snapshot({ provider: "deepseek-official" });
+	assert.deepEqual(deepseek.providers.map((value) => value.id), ["deepseek"]);
+	assert.equal(deepseek.unsupportedProvider, undefined);
+	assert.equal(urls.length, 3);
+	service.dispose();
+});
+
+test("an unknown model provider returns no accounts and names the unsupported provider", async () => {
+	const urls = [];
+	const service = makeService({ fetchImpl: async (url) => { urls.push(url); return responseFor(url); } });
+	const result = await service.snapshot({ provider: "openai" });
+	assert.deepEqual(result.providers, []);
+	assert.equal(result.unsupportedProvider, "openai");
+	assert.equal(urls.length, 0);
+	service.dispose();
+});
+
+test("DeepSeek account login and Moonshot pay-as-you-go cannot read a different API or Coding Plan account", async () => {
+	const service = makeService({
+		resolveCredential() { throw new Error("unsupported providers must not read credentials"); },
+		fetchImpl() { throw new Error("unsupported providers must not query any account"); }
+	});
+	for (const provider of ["deepseek-account", "moonshot", "moonshotai", "moonshotai-cn"]) {
+		const result = await service.snapshot({ provider });
+		assert.deepEqual(result.providers, []);
+		assert.equal(result.unsupportedProvider, provider);
+	}
+	service.dispose();
 });
