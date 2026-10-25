@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; connect-src 'none'; base-uri 'none'; form-action 'none'">
+<title>Model Meter · Offline example-data demo</title>
+<style>
+:root{font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#172238;background:#f5f7fa;font-synthesis:none}*{box-sizing:border-box}body{margin:0}main{max-width:1320px;margin:auto;padding:48px 28px 32px}header{display:flex;justify-content:space-between;gap:24px;align-items:flex-start;margin-bottom:28px}h1{font-size:40px;letter-spacing:-1.4px;margin:0 0 10px}p{line-height:1.55}header p{margin:0;color:#627086;font-size:18px}.badges{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}.badge{border-radius:20px;padding:8px 13px;font-size:12px;font-weight:650;white-space:nowrap;background:#e8edf5;color:#42516a}.example{background:#fff0cf;color:#8a5d00}.toolbar{display:flex;gap:12px;align-items:center;margin:20px 0 24px;flex-wrap:wrap}button{font:inherit;font-size:13px;border:1px solid #dbe2ec;background:#fff;color:#35455f;border-radius:9px;padding:9px 13px;cursor:pointer}button:hover{border-color:#6277ad}button:focus-visible{outline:3px solid #8899ec;outline-offset:3px}button[aria-pressed="true"]{background:#e9edff;border-color:#99a7f0;color:#334bb2}#refresh-status{font-size:13px;color:#627086}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}.card{background:#fff;border:1px solid #e0e6ee;border-radius:18px;padding:24px;box-shadow:0 8px 32px #1c2d4806;display:flex;flex-direction:column;min-height:550px}.provider{display:flex;align-items:center;gap:12px;padding-bottom:20px;border-bottom:1px solid #edf0f5;margin-bottom:24px}.icon{width:40px;height:40px;display:grid;place-items:center;border-radius:11px;font-weight:700;font-size:21px;color:#fff;background:var(--provider)}h2{font-size:20px;margin:0 0 3px}.kind{font-size:10px;letter-spacing:.6px;color:#718096;font-weight:700}.window+.window{border-top:1px solid #edf0f5;margin-top:25px;padding-top:25px}.row{display:flex;align-items:baseline;justify-content:space-between;gap:14px;font-size:15px;color:#43516a}.row strong{color:#172238;white-space:nowrap}.meter{height:9px;background:#edf0f5;border-radius:9px;overflow:hidden;margin:14px 0 16px}.fill{height:100%;background:var(--provider);border-radius:9px}.remaining{font-size:14px;color:#526179;margin:0 0 14px}.meta{font-size:12px;color:#7a8799;margin:6px 0;line-height:1.6}.card footer{font-size:12px;color:#8792a3;margin-top:auto;padding-top:30px}.total-label{font-size:15px;color:#43516a;margin:0 0 16px}.amount{font-size:34px;font-weight:700;letter-spacing:-.6px;margin:0 0 27px}.balance-rows{border-top:1px solid #edf0f5;padding-top:22px;display:grid;gap:20px}.ok{padding:14px 10px;border-radius:10px;text-align:center;background:#edf8f1;color:#2c7c4c;font-size:13px;font-weight:550;margin:30px 0 17px}.page-footer{color:#526179;font-size:13px;padding-top:28px}.disclaimer{color:#7a8799;font-size:12px}.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}@media(max-width:1000px){.grid{grid-template-columns:1fr}.card{min-height:0}.card footer{padding-top:24px}header{flex-direction:column}.badges{justify-content:flex-start}main{max-width:640px;padding-top:28px}h1{font-size:34px}}
+</style>
+</head>
+<body>
+<main>
+<header>
+<div><h1>Model Meter</h1><p data-t="subtitle">DeepSeek balance · GLM / Kimi plan quotas</p></div>
+<div class="badges"><span class="badge" data-t="unofficial">Unofficial DeepSeek Harness plugin</span><span class="badge example" data-t="example">EXAMPLE DATA · OFFLINE DEMO</span></div>
+</header>
+<p class="meta" data-t="notice">Illustrative UI preview. All values and reset times are fictional. This page does not access accounts or send network requests.</p>
+<div class="toolbar">
+<button type="button" id="english" aria-pressed="true">English</button><button type="button" id="chinese" aria-pressed="false">中文</button>
+<button type="button" id="refresh" data-t="refresh">Simulate refresh</button>
+<span id="refresh-status" role="status" aria-live="polite"></span>
+</div>
+<div class="grid">
+<section class="card" style="--provider:#5668e8" aria-labelledby="glm-title">
+<div class="provider"><span class="icon" aria-hidden="true">G</span><div><h2 id="glm-title">GLM Coding Plan</h2><span class="kind" data-t="plan">CODING PLAN</span></div></div>
+<div class="window"><div class="row"><span data-t="fiveHour">5-hour window</span><strong data-t="used32">32% used</strong></div><div class="meter" role="progressbar" aria-label="GLM 5-hour usage (example)" aria-valuemin="0" aria-valuemax="100" aria-valuenow="32"><div class="fill" style="width:32%"></div></div><p class="remaining" data-t="remaining68">68% remaining</p><p class="meta" data-t="glmReset5">Example reset: Mon 10:00 UTC</p><p class="meta" data-t="in2h">Resets in 2h 15m</p></div>
+<div class="window"><div class="row"><span data-t="sevenDay">7-day window</span><strong data-t="used48">48% used</strong></div><div class="meter" role="progressbar" aria-label="GLM weekly usage (example)" aria-valuemin="0" aria-valuemax="100" aria-valuenow="48"><div class="fill" style="width:48%"></div></div><p class="remaining" data-t="remaining52">52% remaining</p><p class="meta" data-t="glmReset7">Example reset: Fri 00:00 UTC</p><p class="meta" data-t="in3d">Resets in 3d 16h</p></div>
+<footer data-t="refreshNote">Read-only · Plugin refreshes every 60s</footer>
+</section>
+<section class="card" style="--provider:#239b86" aria-labelledby="kimi-title">
+<div class="provider"><span class="icon" aria-hidden="true">K</span><div><h2 id="kimi-title">Kimi Code</h2><span class="kind" data-t="plan">CODING PLAN</span></div></div>
+<div class="window"><div class="row"><span data-t="fiveHour">5-hour window</span><strong data-t="used18">18% used</strong></div><div class="meter" role="progressbar" aria-label="Kimi 5-hour usage (example)" aria-valuemin="0" aria-valuemax="100" aria-valuenow="18"><div class="fill" style="width:18%"></div></div><p class="remaining" data-t="remaining82">82% remaining</p><p class="meta" data-t="kimiReset5">Example reset: Mon 11:00 UTC</p><p class="meta" data-t="in3h">Resets in 3h 15m</p></div>
+<div class="window"><div class="row"><span data-t="monthlyCode">Monthly coding quota</span><strong data-t="used7">7% used</strong></div><div class="meter" role="progressbar" aria-label="Kimi monthly coding usage (example)" aria-valuemin="0" aria-valuemax="100" aria-valuenow="7"><div class="fill" style="width:7%"></div></div><p class="remaining" data-t="remaining93">93% remaining</p><p class="meta" data-t="kimiResetMonth">Example reset: Next month, 00:00 UTC</p><p class="meta" data-t="in12d">Resets in 12d 16h</p></div>
+<footer data-t="refreshNote">Read-only · Plugin refreshes every 60s</footer>
+</section>
+<section class="card" style="--provider:#3972d5" aria-labelledby="deepseek-title">
+<div class="provider"><span class="icon" aria-hidden="true">D</span><div><h2 id="deepseek-title">DeepSeek API</h2><span class="kind" data-t="balance">API BALANCE</span></div></div>
+<p class="total-label" data-t="total">Total available balance</p><p class="amount">CNY 128.50</p>
+<div class="balance-rows"><div class="row"><span data-t="topped">Topped-up balance</span><strong>CNY 120.00</strong></div><div class="row"><span data-t="granted">Granted balance</span><strong>CNY 8.50</strong></div></div>
+<p class="ok" data-t="available">Balance available for API calls</p><p class="meta" data-t="currency">Amounts are shown per currency.</p>
+<footer data-t="refreshNote">Read-only · Plugin refreshes every 60s</footer>
+</section>
+</div>
+<div class="page-footer"><p data-t="scope">Account quotas and balances are separate from session token statistics.</p><p class="disclaimer" data-t="disclaimer">Model Meter is an unofficial third-party plugin. It is not affiliated with or endorsed by DeepSeek, Z.ai, or Moonshot AI. This demo uses fictional example data only.</p></div>
+</main>
+<script>
+'use strict';
+const zh={subtitle:'DeepSeek 余额 · GLM / Kimi 套餐额度',unofficial:'非官方 DeepSeek Harness 插件',example:'示例数据 · 离线演示',notice:'界面示意预览。所有金额、额度和重置时间均为虚构示例。本页不访问账号，也不发送网络请求。',refresh:'模拟刷新',plan:'CODING PLAN 套餐',balance:'API 余额',fiveHour:'5 小时窗口',sevenDay:'7 天窗口',monthlyCode:'月度编程额度',used32:'已用 32%',used48:'已用 48%',used18:'已用 18%',used7:'已用 7%',remaining68:'剩余 68%',remaining52:'剩余 52%',remaining82:'剩余 82%',remaining93:'剩余 93%',glmReset5:'示例重置：周一 10:00 UTC',glmReset7:'示例重置：周五 00:00 UTC',kimiReset5:'示例重置：周一 11:00 UTC',kimiResetMonth:'示例重置：下月 00:00 UTC',in2h:'距重置 2 小时 15 分',in3d:'距重置 3 天 16 小时',in3h:'距重置 3 小时 15 分',in12d:'距重置 12 天 16 小时',total:'总可用余额',topped:'充值余额',granted:'赠送余额',available:'余额可用于 API 调用',currency:'金额按币种分别展示。',refreshNote:'只读查询 · 插件每 60 秒刷新',scope:'账号额度与余额，同本会话的 Token 统计分别计算。',disclaimer:'Model Meter 为非官方第三方插件，与 DeepSeek、Z.ai、Moonshot AI 无隶属关系，亦未获其背书。本演示仅使用虚构示例数据。'};
+const en={};document.querySelectorAll('[data-t]').forEach(el=>{en[el.dataset.t]=el.textContent});
+let language='en';let refreshed=false;
+function showStatus(){document.getElementById('refresh-status').textContent=refreshed?(language==='zh'?'模拟刷新完成；示例数值保持不变。':'Simulated refresh complete; example values unchanged.'):(language==='zh'?'仅为示例，不连接任何账号。':'Example only. No account connection.');}
+function setLanguage(value){language=value;document.documentElement.lang=value==='zh'?'zh-CN':'en';const dict=value==='zh'?zh:en;document.querySelectorAll('[data-t]').forEach(el=>{el.textContent=dict[el.dataset.t]});document.getElementById('english').setAttribute('aria-pressed',String(value==='en'));document.getElementById('chinese').setAttribute('aria-pressed',String(value==='zh'));showStatus();}
+document.getElementById('english').addEventListener('click',()=>setLanguage('en'));document.getElementById('chinese').addEventListener('click',()=>setLanguage('zh'));document.getElementById('refresh').addEventListener('click',()=>{refreshed=true;showStatus()});showStatus();
+</script>
+</body>
+</html>

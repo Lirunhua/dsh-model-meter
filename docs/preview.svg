@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1700" height="1070" viewBox="0 0 1700 1070" role="img" aria-labelledby="title desc">
+<title id="title">Model Meter — example usage preview</title>
+<desc id="desc">Unofficial DeepSeek Harness plugin. Fictional GLM and Kimi plan quotas and DeepSeek API balances. All values are example data.</desc>
+<defs><filter id="shadow" x="-10%" y="-10%" width="120%" height="130%"><feDropShadow dx="0" dy="8" stdDeviation="16" flood-color="#1c2d48" flood-opacity=".045"/></filter></defs>
+<rect width="1700" height="1070" fill="#f5f7fa"/>
+<g font-family="Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Arial, sans-serif">
+<text x="60" y="103" font-size="46" fill="#172238" font-weight="750" text-anchor="start">Model Meter</text>
+<text x="60" y="148" font-size="24" fill="#627086" font-weight="400" text-anchor="start">DeepSeek balance · GLM / Kimi plan quotas</text>
+<rect x="1132" y="63" width="224" height="36" rx="18" fill="#e8edf5" />
+<text x="1244.0" y="87" font-size="14" fill="#42516a" font-weight="600" text-anchor="middle">Unofficial plugin</text>
+<rect x="1374" y="63" width="266" height="36" rx="18" fill="#fff0cf" />
+<text x="1507.0" y="87" font-size="14" fill="#8a5d00" font-weight="600" text-anchor="middle">EXAMPLE DATA</text>
+<text x="60" y="199" font-size="19" fill="#627086" font-weight="400" text-anchor="start">One clear view inside the DeepSeek Harness sidebar.</text>
+<rect x="60" y="238" width="500" height="640" rx="20" fill="#fff" stroke="#e0e6ee" filter="url(#shadow)"/>
+<rect x="92" y="270" width="44" height="44" rx="12" fill="#5668e8" />
+<text x="114" y="300" font-size="23" fill="#fff" font-weight="700" text-anchor="middle">G</text>
+<text x="152" y="291" font-size="24" fill="#172238" font-weight="700" text-anchor="start">GLM Coding Plan</text>
+<text x="152" y="315" font-size="12" fill="#718096" font-weight="650" text-anchor="start">CODING PLAN</text>
+<path d="M92 339H528" stroke="#edf0f5"/>
+<text x="92" y="383" font-size="20" fill="#43516a" font-weight="500" text-anchor="start">5-hour window</text>
+<text x="528" y="383" font-size="20" fill="#172238" font-weight="650" text-anchor="end">32% used</text>
+<rect x="92" y="406" width="436" height="12" rx="6" fill="#edf0f5" />
+<rect x="92" y="406" width="139.52" height="12" rx="6" fill="#5668e8" />
+<text x="92" y="454" font-size="18" fill="#526179" font-weight="400" text-anchor="start">68% remaining</text>
+<text x="92" y="489" font-size="17" fill="#7a8799" font-weight="400" text-anchor="start">Example reset: Mon 10:00 UTC</text>
+<text x="92" y="518" font-size="17" fill="#7a8799" font-weight="400" text-anchor="start">Resets in 2h 15m</text>
+<path d="M92 546H528" stroke="#edf0f5"/>
+<text x="92" y="590" font-size="20" fill="#43516a" font-weight="500" text-anchor="start">7-day window</text>
+<text x="528" y="590" font-size="20" fill="#172238" font-weight="650" text-anchor="end">48% used</text>
+<rect x="92" y="613" width="436" height="12" rx="6" fill="#edf0f5" />
+<rect x="92" y="613" width="209.28" height="12" rx="6" fill="#5668e8" />
+<text x="92" y="661" font-size="18" fill="#526179" font-weight="400" text-anchor="start">52% remaining</text>
+<text x="92" y="696" font-size="17" fill="#7a8799" font-weight="400" text-anchor="start">Example reset: Fri 00:00 UTC</text>
+<text x="92" y="725" font-size="17" fill="#7a8799" font-weight="400" text-anchor="start">Resets in 3d 16h</text>
+<text x="92" y="835" font-size="16" fill="#8792a3" font-weight="400" text-anchor="start">Read-only · Refresh every 60s</text>
+<rect x="600" y="238" width="500" height="640" rx="20" fill="#fff" stroke="#e0e6ee" filter="url(#shadow)"/>
+<rect x="632" y="270" width="44" height="44" rx="12" fill="#239b86" />
+<text x="654" y="300" font-size="23" fill="#fff" font-weight="700" text-anchor="middle">K</text>
+<text x="692" y="291" font-size="24" fill="#172238" font-weight="700" text-anchor="start">Kimi Code</text>
+<text x="692" y="315" font-size="12" fill="#718096" font-weight="650" text-anchor="start">CODING PLAN</text>
+<path d="M632 339H1068" stroke="#edf0f5"/>
+<text x="632" y="383" font-size="20" fill="#43516a" font-weight="500" text-anchor="start">5-hour window</text>
+<text x="1068" y="383" font-size="20" fill="#172238" font-weight="650" text-anchor="end">18% used</text>
+<rect x="632" y="406" width="436" height="12" rx="6" fill="#edf0f5" />
+<rect x="632" y="406" width="78.48" height="12" rx="6" fill="#239b86" />
+<text x="632" y="454" font-size="18" fill="#526179" font-weight="400" text-anchor="start">82% remaining</text>
+<text x="632" y="489" font-size="17" fill="#7a8799" font-weight="400" text-anchor="start">Example reset: Mon 11:00 UTC</text>
+<text x="632" y="518" font-size="17" fill="#7a8799" font-weight="400" text-anchor="start">Resets in 3h 15m</text>
+<path d="M632 546H1068" stroke="#edf0f5"/>
+<text x="632" y="590" font-size="20" fill="#43516a" font-weight="500" text-anchor="start">Monthly coding quota</text>
+<text x="1068" y="590" font-size="20" fill="#172238" font-weight="650" text-anchor="end">7% used</text>
+<rect x="632" y="613" width="436" height="12" rx="6" fill="#edf0f5" />
+<rect x="632" y="613" width="30.52" height="12" rx="6" fill="#239b86" />
+<text x="632" y="661" font-size="18" fill="#526179" font-weight="400" text-anchor="start">93% remaining</text>
+<text x="632" y="696" font-size="17" fill="#7a8799" font-weight="400" text-anchor="start">Example reset: Next month, 00:00 UTC</text>
+<text x="632" y="725" font-size="17" fill="#7a8799" font-weight="400" text-anchor="start">Resets in 12d 16h</text>
+<text x="632" y="835" font-size="16" fill="#8792a3" font-weight="400" text-anchor="start">Read-only · Refresh every 60s</text>
+<rect x="1140" y="238" width="500" height="640" rx="20" fill="#fff" stroke="#e0e6ee" filter="url(#shadow)"/>
+<rect x="1172" y="270" width="44" height="44" rx="12" fill="#3972d5" />
+<text x="1194" y="300" font-size="23" fill="#fff" font-weight="700" text-anchor="middle">D</text>
+<text x="1232" y="291" font-size="24" fill="#172238" font-weight="700" text-anchor="start">DeepSeek API</text>
+<text x="1232" y="315" font-size="12" fill="#718096" font-weight="650" text-anchor="start">API BALANCE</text>
+<path d="M1172 339H1608" stroke="#edf0f5"/>
+<text x="1172" y="383" font-size="20" fill="#43516a" font-weight="500" text-anchor="start">Total available balance</text>
+<text x="1172" y="446" font-size="44" fill="#172238" font-weight="700" text-anchor="start">CNY 128.50</text>
+<path d="M1172 484H1608" stroke="#edf0f5"/>
+<text x="1172" y="536" font-size="19" fill="#627086" font-weight="400" text-anchor="start">Topped-up balance</text>
+<text x="1608" y="536" font-size="21" fill="#172238" font-weight="600" text-anchor="end">CNY 120.00</text>
+<text x="1172" y="586" font-size="19" fill="#627086" font-weight="400" text-anchor="start">Granted balance</text>
+<text x="1608" y="586" font-size="21" fill="#172238" font-weight="600" text-anchor="end">CNY 8.50</text>
+<rect x="1172" y="638" width="436" height="54" rx="12" fill="#edf8f1" />
+<text x="1390" y="672" font-size="17" fill="#2c7c4c" font-weight="550" text-anchor="middle">Balance available for API calls</text>
+<text x="1172" y="740" font-size="17" fill="#7a8799" font-weight="400" text-anchor="start">Amounts are shown per currency.</text>
+<text x="1172" y="835" font-size="16" fill="#8792a3" font-weight="400" text-anchor="start">Read-only · Refresh every 60s</text>
+<text x="60" y="951" font-size="19" fill="#526179" font-weight="400" text-anchor="start">Account quotas and balances are separate from session token statistics.</text>
+<text x="60" y="994" font-size="18" fill="#7a8799" font-weight="400" text-anchor="start">Illustrative preview · All values and reset times are fictional example data.</text>
+<text x="1640" y="994" font-size="16" fill="#8792a3" font-weight="400" text-anchor="end">Not affiliated with DeepSeek</text>
+</g></svg>
