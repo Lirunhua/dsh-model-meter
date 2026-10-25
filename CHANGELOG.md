@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.6.1 — 2026-10-26
+
+A compact header, more account sources, and clearer balance formatting.
+
+- Add ChatGPT subscription quotas, provider-reported plan/credits, and reset times from the active compatible Codex subscription login. Preserve additional feature-specific quota windows.
+- Add DeepSeek signed-in account wallets, separately from API-key balances, with exact decimal totals per currency.
+- Replace repeated card headings with embedded provider marks; display money rounded half up to two decimal places.
+- Isolate cached ChatGPT usage by account and credential, enforce the active-account selection and DeepSeek grant origin, and reject incomplete wallet responses.
+- Preserve selected-provider filtering, missing-selection guidance, cancellation, and portable reset-time behavior.
+- Update bilingual guides and fictional offline examples. All 48 mocked/isolated tests pass; no real-account usage or model inference is part of release validation.
+
+ChatGPT and DeepSeek account adapters depend on internal provider responses and compatible host credential formats; they are not stable public quota API contracts. Package and internal sidebar identifiers remain compatible with previous releases.
+
 ## 0.5.3 — 2026-10-26
 
 Rename the public project to **Usage Panel · 用量面板** (formerly Model Meter).

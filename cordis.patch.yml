@@ -1,4 +1,4 @@
-# Authenticated host usage route: DeepSeek API balance and GLM / Kimi Coding Plans.
+# Authenticated host usage route: ChatGPT, DeepSeek account/API, and GLM / Kimi plans.
 - insert:
     - id: usage-panel
       name: 'dsh-model-meter'
