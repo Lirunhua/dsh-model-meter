@@ -1,7 +1,7 @@
 {
   "name": "dsh-model-meter",
-  "version": "0.5.2",
-  "description": "Unofficial DeepSeek Harness plugin showing the selected model provider's GLM/Kimi Coding Plan quotas, reset times, and DeepSeek API balances.",
+  "version": "0.5.3",
+  "description": "Usage Panel: unofficial DeepSeek Harness sidebar for the selected model provider's GLM/Kimi quotas, reset times, and DeepSeek API balances.",
   "type": "module",
   "main": "./lib/index.js",
   "files": [
@@ -47,7 +47,8 @@
     "usage",
     "balance",
     "quota",
-    "coding-plan"
+    "coding-plan",
+    "usage-panel"
   ],
   "engines": {
     "dsh": ">=0.2.1-rc.3"

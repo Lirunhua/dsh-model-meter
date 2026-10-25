@@ -1,4 +1,4 @@
-# Model Meter
+# Usage Panel · 用量面板
 
 **An unofficial DeepSeek Harness community plugin.** Independently maintained; it is not an official product, review, or endorsement from DeepSeek, Z.ai, or Moonshot/Kimi.
 
@@ -23,7 +23,7 @@ Automatic refresh runs every 60 seconds, with a manual refresh button. Chinese a
 
 Example with fictional data:
 
-![Model Meter preview with fictional demonstration data](docs/preview.png)
+![Usage Panel preview with fictional demonstration data](docs/preview.png)
 
 [Offline interactive demo](docs/demo.html): download and open in a browser to switch between GLM/Kimi/DeepSeek examples, switch languages, and simulate refreshes. Both the preview and demo are UI illustrations with fictional values, not screenshots of a real account.
 
@@ -38,35 +38,35 @@ Reset time       Provider-reported time · resets in 2h 15m
 Use an initialized Harness profile. Quit Harness Desktop normally before changing its plugins:
 
 ```sh
-dsh plugin --profile desktop add github:Lirunhua/dsh-model-meter#v0.5.2
+dsh plugin --profile desktop add github:Lirunhua/dsh-model-meter#v0.5.3
 ```
 
 For the Web profile:
 
 ```sh
-dsh plugin --profile web add github:Lirunhua/dsh-model-meter#v0.5.2
+dsh plugin --profile web add github:Lirunhua/dsh-model-meter#v0.5.3
 ```
 
 On macOS, Desktop also includes a CLI if `dsh` is not on your path:
 
 ```sh
 "/Applications/DeepSeek Harness.app/Contents/Resources/runtime/cli/bin/dsh" \
-  plugin --profile desktop add github:Lirunhua/dsh-model-meter#v0.5.2
+  plugin --profile desktop add github:Lirunhua/dsh-model-meter#v0.5.3
 ```
 
 Alternatively, download a prebuilt release archive and install it locally:
 
 ```sh
-dsh plugin --profile desktop add ./dsh-model-meter-0.5.2.tgz
+dsh plugin --profile desktop add ./dsh-model-meter-0.5.3.tgz
 ```
 
-Reopen Harness and add **Usage** with the right sidebar's `+` button (**用量** in Chinese), then select a model. The plugin package is still named **Model Meter**.
+Reopen Harness and add **Usage** with the right sidebar's `+` button (**用量** in Chinese), then select a model. The technical package name and repository path remain `dsh-model-meter` for existing installations and upgrades. The public name is **Usage Panel**.
 
 This release targets the plugin interfaces shipped in Harness `0.2.1-rc.3`. The minimum version is declared in `package.json`; later runtime compatibility still requires verification. The repository includes runnable `lib/` files, so installation needs no build step.
 
 ### Migrating an early local usage panel
 
-If an early local `dsh-usage-panel` bundle is enabled, disable or remove it before enabling Model Meter to avoid duplicate sidebar registrations. Model Meter retains the original internal tab identifiers so saved sidebar layouts can recover.
+If an early local `dsh-usage-panel` bundle is enabled, disable or remove it before enabling Usage Panel to avoid duplicate sidebar registrations. Usage Panel retains the original internal tab identifiers so saved sidebar layouts can recover.
 
 ## Accounts and regions
 
@@ -97,11 +97,11 @@ Restart Harness after changes. Each provider queries one selected official origi
 
 ## Data accuracy and limits
 
-- DeepSeek queries API balances for API-key models only; account-login model allowances are not supported. Model Meter does not infer subscription percentages or reset schedules for it. Currencies stay separate and decimal strings retain their precision.
+- DeepSeek queries API balances for API-key models only; account-login model allowances are not supported. Usage Panel does not infer subscription percentages or reset schedules for it. Currencies stay separate and decimal strings retain their precision.
 - Available GLM/Kimi windows and reset fields depend on the provider. Missing fields are marked unavailable rather than counted as zero usage.
 - If Kimi returns conflicting old/new statistics for the same window, valid original counts take precedence.
 - The selected model determines which provider is queried. Queries use the provider credential configured for this plugin; results describe that account's plan or balance, not an individual model allowance.
-- Model Meter queries usage; it does not top up balances, make payments, or modify accounts.
+- Usage Panel queries usage; it does not top up balances, make payments, or modify accounts.
 
 ### Official data sources
 
@@ -113,7 +113,7 @@ Restart Harness after changes. Each provider queries one selected official origi
 
 ## Privacy and requests
 
-Provider requests run in the Harness host process through fixed, read-only official endpoints, with timeouts, caching, and redirects rejected. Keys, authorization headers, and raw upstream error bodies are not returned to the browser. Model Meter makes no model-inference requests and sends no account data to an additional analytics service.
+Provider requests run in the Harness host process through fixed, read-only official endpoints, with timeouts, caching, and redirects rejected. Keys, authorization headers, and raw upstream error bodies are not returned to the browser. Usage Panel makes no model-inference requests and sends no account data to an additional analytics service.
 
 ## Development
 

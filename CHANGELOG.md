@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.5.3 — 2026-10-26
+
+Rename the public project to **Usage Panel · 用量面板** (formerly Model Meter).
+
+- Update the package description, bilingual guides, preview and offline demo with the new name.
+- Keep the `dsh-model-meter` package/repository address and internal identifiers so existing installations can update normally.
+- The sidebar entry remains **Usage / 用量**. Runtime behavior is unchanged from 0.5.2.
+
 ## 0.5.2 — 2026-10-26
 
 A simpler view that follows the selected model.

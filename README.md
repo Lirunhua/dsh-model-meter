@@ -1,4 +1,4 @@
-# Model Meter · 模型用量表
+# Usage Panel · 用量面板
 
 **非官方 DeepSeek Harness 社区插件。** 本项目由社区独立维护，不代表 DeepSeek、智谱或 Moonshot/Kimi 的官方产品、审核或推荐。
 
@@ -23,7 +23,7 @@
 
 示例（演示数据）：
 
-![Model Meter 面板预览，所有数值均为演示数据](docs/preview.png)
+![Usage Panel 面板预览，所有数值均为演示数据](docs/preview.png)
 
 [离线交互演示](docs/demo.html)：下载后用浏览器打开，可切换 GLM/Kimi/DeepSeek 示例、中英文和模拟刷新。预览图与演示均为界面示意，使用虚构数值，不是实际账号截图。
 
@@ -38,35 +38,35 @@
 在已初始化的 Harness profile 中安装。Desktop 用户先正常退出 Harness，再运行：
 
 ```sh
-dsh plugin --profile desktop add github:Lirunhua/dsh-model-meter#v0.5.2
+dsh plugin --profile desktop add github:Lirunhua/dsh-model-meter#v0.5.3
 ```
 
 Web profile 使用：
 
 ```sh
-dsh plugin --profile web add github:Lirunhua/dsh-model-meter#v0.5.2
+dsh plugin --profile web add github:Lirunhua/dsh-model-meter#v0.5.3
 ```
 
 macOS Desktop 没有配置 `dsh` 命令时，可用应用自带的 CLI：
 
 ```sh
 "/Applications/DeepSeek Harness.app/Contents/Resources/runtime/cli/bin/dsh" \
-  plugin --profile desktop add github:Lirunhua/dsh-model-meter#v0.5.2
+  plugin --profile desktop add github:Lirunhua/dsh-model-meter#v0.5.3
 ```
 
 也可下载发布页的预构建 `.tgz` 后本地安装：
 
 ```sh
-dsh plugin --profile desktop add ./dsh-model-meter-0.5.2.tgz
+dsh plugin --profile desktop add ./dsh-model-meter-0.5.3.tgz
 ```
 
-重新打开 Harness，通过右侧栏 `+` 添加 **用量**（英文界面为 **Usage**），然后选择所用模型。插件包名仍为 **Model Meter**。
+重新打开 Harness，通过右侧栏 `+` 添加 **用量**（英文界面为 **Usage**），然后选择所用模型。技术包名和仓库地址继续使用 `dsh-model-meter`，以兼容已有安装与升级；公开名称为 **Usage Panel · 用量面板**。
 
 本版本使用 Harness `0.2.1-rc.3` 的插件接口；`package.json` 声明最低版本，后续版本的兼容性以实际测试为准。插件已包含可运行的 `lib/`，安装时无需编译。
 
 ### 从旧的本地用量面板迁移
 
-如果 profile 里已启用早期的 `dsh-usage-panel` 本地版本，先禁用或移除该组合包，再启用 Model Meter，避免两个面板注册同一扩展点。本项目保留早期面板的内部标签标识，方便已有侧栏恢复。
+如果 profile 里已启用早期的 `dsh-usage-panel` 本地版本，先禁用或移除该组合包，再启用 Usage Panel，避免两个面板注册同一扩展点。本项目保留早期面板的内部标签标识，方便已有侧栏恢复。
 
 ## 配置账号
 
