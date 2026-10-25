@@ -4,32 +4,33 @@
 
 [English](README.en.md) · [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness)
 
-把 **DeepSeek API 余额、GLM/Kimi Coding Plan 套餐额度、重置时间和当前会话 Token** 放进 Harness 右侧栏。
+按当前选中的模型，在 Harness 右侧栏只显示对应服务商的 **Coding Plan 套餐额度、重置时间或 DeepSeek API 余额**。展示更简洁，切换模型时同步切换用量卡片。
 
 ## 支持什么
 
 | 服务商 | 展示数据 |
 |---|---|
 | DeepSeek API | 总可用余额、充值余额、赠送余额、API 余额是否可调用；CNY/USD 分别显示 |
-| GLM Coding Plan | 服务商返回的 5 小时、7 天及其他套餐窗口，已用/剩余比例，重置时间与倒计时 |
-| Kimi Code | 服务商返回的 5 小时、7 天、月度总量、月度编程等窗口，已用/剩余比例，重置时间与倒计时 |
-| 当前 Harness 会话 | 输入/输出 Token、缓存命中率、上下文压力、轮次和耗时 |
+| GLM Coding Plan | 服务商返回的 5 小时、7 天及其他套餐窗口，已用比例，重置时间与倒计时 |
+| Kimi Code | 服务商返回的 5 小时、7 天、月度总量、月度编程等窗口，已用比例，重置时间与倒计时 |
 
 - 每 60 秒自动刷新，支持手动刷新。
 - 中英文界面随 Harness 语言设置切换。
-- 查询失败、缺少凭据、未提供的数据均有明确状态；一家查询失败不阻塞其他卡片。
-- 账号额度/余额与当前会话 Token 分别展示。
+- 只显示当前所选模型对应的服务商；未选择模型时显示选择提示，不支持的服务商显示明确状态。
+- 套餐窗口只保留已用比例、进度条、重置时间与倒计时；不再重复展示剩余比例和原始计数。
+- 不再展示会话 Token、上下文压力、轮次和耗时。额度/余额属于配置账号的整体用量，不是单个模型的独立消耗。
+- 查询失败、缺少凭据、未提供的数据均有明确状态。
 
 示例（演示数据）：
 
 ![Model Meter 面板预览，所有数值均为演示数据](docs/preview.png)
 
-[离线交互演示](docs/demo.html)：下载后用浏览器打开，可切换中英文和模拟刷新。预览图与演示均为界面示意，使用虚构数值，不是实际账号截图。
+[离线交互演示](docs/demo.html)：下载后用浏览器打开，可切换 GLM/Kimi/DeepSeek 示例、中英文和模拟刷新。预览图与演示均为界面示意，使用虚构数值，不是实际账号截图。
 
 ```text
-GLM Coding Plan   5 小时窗口：已用 35%，剩余 65% · 2 小时后重置
-Kimi Code         7 天窗口：已用 20%，剩余 80% · 服务商返回的重置时间
-DeepSeek API      总可用余额 USD 12.50 · 充值 USD 10.00 · 赠送 USD 2.50
+选择 Kimi 模型 → 只显示 Kimi Code
+5 小时窗口    已用 18%
+重置时间      服务商返回的时间 · 距重置 2 小时 15 分
 ```
 
 ## 安装
@@ -37,29 +38,29 @@ DeepSeek API      总可用余额 USD 12.50 · 充值 USD 10.00 · 赠送 USD 2.
 在已初始化的 Harness profile 中安装。Desktop 用户先正常退出 Harness，再运行：
 
 ```sh
-dsh plugin --profile desktop add github:Lirunhua/dsh-model-meter
+dsh plugin --profile desktop add github:Lirunhua/dsh-model-meter#v0.5.2
 ```
 
 Web profile 使用：
 
 ```sh
-dsh plugin --profile web add github:Lirunhua/dsh-model-meter
+dsh plugin --profile web add github:Lirunhua/dsh-model-meter#v0.5.2
 ```
 
 macOS Desktop 没有配置 `dsh` 命令时，可用应用自带的 CLI：
 
 ```sh
 "/Applications/DeepSeek Harness.app/Contents/Resources/runtime/cli/bin/dsh" \
-  plugin --profile desktop add github:Lirunhua/dsh-model-meter
+  plugin --profile desktop add github:Lirunhua/dsh-model-meter#v0.5.2
 ```
 
 也可下载发布页的预构建 `.tgz` 后本地安装：
 
 ```sh
-dsh plugin --profile desktop add ./dsh-model-meter-0.4.0.tgz
+dsh plugin --profile desktop add ./dsh-model-meter-0.5.2.tgz
 ```
 
-重新打开 Harness，通过右侧栏 `+` 添加 **Model Meter**。
+重新打开 Harness，通过右侧栏 `+` 添加 **用量**（英文界面为 **Usage**），然后选择所用模型。插件包名仍为 **Model Meter**。
 
 本版本使用 Harness `0.2.1-rc.3` 的插件接口；`package.json` 声明最低版本，后续版本的兼容性以实际测试为准。插件已包含可运行的 `lib/`，安装时无需编译。
 
@@ -96,10 +97,10 @@ dsh plugin --profile desktop add ./dsh-model-meter-0.4.0.tgz
 
 ## 数据含义与限制
 
-- DeepSeek 提供 API 余额。本插件不为它推算套餐使用百分比或重置时间；不同币种不相加，金额按十进制字符串保留精度。
+- DeepSeek 仅查询 API Key 模型的 API 余额；账号登录模型的额度暂不支持查询。本插件不为它推算套餐使用百分比或重置时间；不同币种不相加，金额按十进制字符串保留精度。
 - GLM/Kimi 的窗口是否存在、是否返回重置时间取决于服务商。缺失时显示“未提供”，不按零使用量处理。
-- Kimi 同时返回新旧统计且同一窗口数值冲突时，面板采用有效原始计数并显示冲突提示。
-- 当前会话 Token 取决于模型上报；上下文构成是估算，不是结算账单。
+- Kimi 同时返回新旧统计且同一窗口数值冲突时，优先采用有效原始计数。
+- 当前模型只决定查询哪个服务商。查询使用本插件配置的服务商凭据；结果是该账号的套餐额度或余额，不是当前模型的专属额度。
 - 这是用量查询插件，不提供充值、支付或账户修改操作。
 
 ### 官方数据来源
@@ -124,7 +125,7 @@ npm test
 npm pack --ignore-scripts
 ```
 
-测试使用显式假凭据与模拟服务商响应，覆盖余额精度、多币种、缺失字段、真实 Cordis 挂载/清理、缓存、取消、超时、界面显示与刷新生命周期。真实 Cordis 测试使用开发依赖，不因缺依赖而跳过。诊断其他运行时时可显式设置 `DSH_CORDIS_MODULE` 为可导入的 Cordis 模块地址。
+测试使用显式假凭据与模拟服务商响应，覆盖余额精度、多币种、缺失字段、真实 Cordis 挂载/清理、缓存、取消、超时、所选服务商过滤、界面显示与刷新生命周期。真实 Cordis 测试使用开发依赖，不因缺依赖而跳过。诊断其他运行时时可显式设置 `DSH_CORDIS_MODULE` 为可导入的 Cordis 模块地址。
 
 问题与反馈：[GitHub Issues](https://github.com/Lirunhua/dsh-model-meter/issues)。报告问题时请删除密钥、认证头、个人余额和会话内容。
 

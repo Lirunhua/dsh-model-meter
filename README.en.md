@@ -4,29 +4,33 @@
 
 [中文](README.md) · [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness)
 
-Read DeepSeek API balances, GLM/Kimi Coding Plan quotas, reset times, and session tokens in the Harness right sidebar.
+A simpler Harness sidebar that follows the selected model and shows only its provider's **Coding Plan quotas, reset times, or DeepSeek API balance**.
 
 ## Features
 
 | Provider | Data shown |
 |---|---|
 | DeepSeek API | Total available, topped-up, and granted balances; API balance availability; CNY/USD shown separately |
-| GLM Coding Plan | Provider-reported 5-hour, 7-day, and other windows; used/remaining percentages and reset times |
+| GLM Coding Plan | Provider-reported 5-hour, 7-day, and other windows; used percentages and reset times |
 | Kimi Code | Provider-reported 5-hour, 7-day, monthly total, and monthly coding windows; usage and resets |
-| Current Harness session | Input/output tokens, cache-hit rate, context pressure, turns, and durations |
 
-Automatic refresh runs every 60 seconds, with a manual refresh button. Chinese and English follow the Harness language setting. A failed provider does not block the other cards. Account-wide quotas and balances are displayed separately from session tokens.
+Automatic refresh runs every 60 seconds, with a manual refresh button. Chinese and English follow the Harness language setting.
+
+- Shows only the provider corresponding to the selected model. No selection and unsupported providers have explicit states.
+- Quota windows keep the used percentage, progress bar, reset time, and countdown; repeated remaining percentages and raw counts are removed.
+- Session tokens, context pressure, turns, and durations are no longer displayed.
+- Quotas and balances belong to the configured provider account, rather than measuring the selected model's individual consumption.
 
 Example with fictional data:
 
 ![Model Meter preview with fictional demonstration data](docs/preview.png)
 
-[Offline interactive demo](docs/demo.html): download and open in a browser to switch languages and simulate refreshes. Both the preview and demo are UI illustrations with fictional values, not screenshots of a real account.
+[Offline interactive demo](docs/demo.html): download and open in a browser to switch between GLM/Kimi/DeepSeek examples, switch languages, and simulate refreshes. Both the preview and demo are UI illustrations with fictional values, not screenshots of a real account.
 
 ```text
-GLM Coding Plan   5-hour window: 35% used, 65% remaining · resets in 2h
-Kimi Code         7-day window: 20% used, 80% remaining · provider reset time
-DeepSeek API      USD 12.50 total · USD 10.00 topped-up · USD 2.50 granted
+Select a Kimi model → only Kimi Code appears
+5-hour window    18% used
+Reset time       Provider-reported time · resets in 2h 15m
 ```
 
 ## Install
@@ -34,29 +38,29 @@ DeepSeek API      USD 12.50 total · USD 10.00 topped-up · USD 2.50 granted
 Use an initialized Harness profile. Quit Harness Desktop normally before changing its plugins:
 
 ```sh
-dsh plugin --profile desktop add github:Lirunhua/dsh-model-meter
+dsh plugin --profile desktop add github:Lirunhua/dsh-model-meter#v0.5.2
 ```
 
 For the Web profile:
 
 ```sh
-dsh plugin --profile web add github:Lirunhua/dsh-model-meter
+dsh plugin --profile web add github:Lirunhua/dsh-model-meter#v0.5.2
 ```
 
 On macOS, Desktop also includes a CLI if `dsh` is not on your path:
 
 ```sh
 "/Applications/DeepSeek Harness.app/Contents/Resources/runtime/cli/bin/dsh" \
-  plugin --profile desktop add github:Lirunhua/dsh-model-meter
+  plugin --profile desktop add github:Lirunhua/dsh-model-meter#v0.5.2
 ```
 
 Alternatively, download a prebuilt release archive and install it locally:
 
 ```sh
-dsh plugin --profile desktop add ./dsh-model-meter-0.4.0.tgz
+dsh plugin --profile desktop add ./dsh-model-meter-0.5.2.tgz
 ```
 
-Reopen Harness and add **Model Meter** with the right sidebar's `+` button.
+Reopen Harness and add **Usage** with the right sidebar's `+` button (**用量** in Chinese), then select a model. The plugin package is still named **Model Meter**.
 
 This release targets the plugin interfaces shipped in Harness `0.2.1-rc.3`. The minimum version is declared in `package.json`; later runtime compatibility still requires verification. The repository includes runnable `lib/` files, so installation needs no build step.
 
@@ -93,10 +97,10 @@ Restart Harness after changes. Each provider queries one selected official origi
 
 ## Data accuracy and limits
 
-- DeepSeek exposes API balances. Model Meter does not infer subscription percentages or reset schedules for it. Currencies stay separate and decimal strings retain their precision.
+- DeepSeek queries API balances for API-key models only; account-login model allowances are not supported. Model Meter does not infer subscription percentages or reset schedules for it. Currencies stay separate and decimal strings retain their precision.
 - Available GLM/Kimi windows and reset fields depend on the provider. Missing fields are marked unavailable rather than counted as zero usage.
-- If Kimi returns conflicting old/new statistics for the same window, valid original counts take precedence and the card shows a warning.
-- Session token totals depend on model reporting. Context composition is an estimate, not a billing statement.
+- If Kimi returns conflicting old/new statistics for the same window, valid original counts take precedence.
+- The selected model determines which provider is queried. Queries use the provider credential configured for this plugin; results describe that account's plan or balance, not an individual model allowance.
 - Model Meter queries usage; it does not top up balances, make payments, or modify accounts.
 
 ### Official data sources
@@ -121,7 +125,7 @@ npm test
 npm pack --ignore-scripts
 ```
 
-Tests use explicitly fake credentials and mocked provider responses. Coverage includes decimal balances, multiple currencies, missing fields, real Cordis mounting/disposal, caching, cancellation, timeouts, UI states, and refresh lifecycles. The real Cordis test uses the development dependency and fails if unavailable rather than silently skipping. For runtime diagnostics, `DSH_CORDIS_MODULE` may explicitly name an importable Cordis module.
+Tests use explicitly fake credentials and mocked provider responses. Coverage includes decimal balances, multiple currencies, missing fields, real Cordis mounting/disposal, caching, cancellation, timeouts, selected-provider filtering, UI states, and refresh lifecycles. The real Cordis test uses the development dependency and fails if unavailable rather than silently skipping. For runtime diagnostics, `DSH_CORDIS_MODULE` may explicitly name an importable Cordis module.
 
 Report problems in [GitHub Issues](https://github.com/Lirunhua/dsh-model-meter/issues). Remove keys, authorization headers, personal balances, and conversation content from reports.
 

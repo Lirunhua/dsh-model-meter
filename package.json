@@ -1,7 +1,7 @@
 {
   "name": "dsh-model-meter",
-  "version": "0.4.0",
-  "description": "Unofficial DeepSeek Harness plugin for DeepSeek API balances, GLM and Kimi Coding Plan quotas, reset times, and session usage.",
+  "version": "0.5.2",
+  "description": "Unofficial DeepSeek Harness plugin showing the selected model provider's GLM/Kimi Coding Plan quotas, reset times, and DeepSeek API balances.",
   "type": "module",
   "main": "./lib/index.js",
   "files": [
