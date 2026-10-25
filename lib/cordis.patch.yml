@@ -1,5 +1,0 @@
-# Authenticated host usage route: DeepSeek API balance and GLM / Kimi Coding Plans.
-- insert:
-    - id: usage-panel
-      name: 'dsh-model-meter'
-      disabled: false
