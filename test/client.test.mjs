@@ -70,9 +70,9 @@ test('plan quotas show used percentages, exact reset and account scope, without 
     id: 'kimi', label: 'Kimi Code', status: 'ok', fetchedAt: Date.now(),
     windows: [{ id: '5h', usedPercent: 12.5, resetAt: '2099-01-01T12:00:00Z', used: 25, limit: 200, remaining: 175 }],
   }]);
-  assert.match(text, /当前模型用量/);
-  assert.match(text, /服务商账号层面的套餐额度/);
-  assert.match(text, /当前模型：k3/);
+  // Header shows only the provider brand mark; title/model/scope lines are gone.
+  assert.doesNotMatch(text, /当前模型用量|服务商账号层面|当前模型：/);
+  assert.ok(nodes.some((n) => n.type === 'img' && n.props.alt === 'Kimi'));
   assert.match(text, /已用 12\.5%/);
   assert.match(text, /重置：/);
   assert.match(text, /距重置/);
@@ -115,7 +115,7 @@ test('percentage precision keeps the used value exact without repeating it as a 
   assert.doesNotMatch(text, /剩余 95\.65%/);
 });
 
-test('DeepSeek balances retain decimal precision and separate currencies without quota meters', () => {
+test('DeepSeek balances round to two decimal places and separate currencies without quota meters', () => {
   const amount = '9007199254740993.12345678901234567890';
   const { text, nodes } = render([{
     id: 'deepseek', label: 'DeepSeek API', kind: 'balance', status: 'ok', isAvailable: true,
@@ -125,7 +125,7 @@ test('DeepSeek balances retain decimal precision and separate currencies without
       { currency: 'USD', total: '2.50', toppedUp: '2.00', granted: '0.50' },
     ],
   }]);
-  assert.ok(text.includes(`CNY ${amount}`));
+  assert.ok(text.includes('CNY 9007199254740993.12'));
   assert.match(text, /USD 2\.50/);
   assert.match(text, /CNY 0\.00/);
   assert.match(text, /充值余额/);
@@ -133,7 +133,7 @@ test('DeepSeek balances retain decimal precision and separate currencies without
   assert.match(text, /余额可用于 API 调用/);
   assert.equal(nodes.filter((n) => n.props['data-usage-currency']).length, 2);
   assert.equal(nodes.filter((n) => n.props.role === 'progressbar').length, 0);
-  assert.doesNotMatch(text, /重置|额度窗口|NaN|Infinity/);
+  assert.doesNotMatch(text, /9007199254740993\.12345678901234567890|重置|额度窗口|NaN|Infinity/);
 });
 
 test('DeepSeek zero and negative balances are valid query results rather than a failed query', () => {
@@ -154,9 +154,8 @@ test('adding DeepSeek keeps GLM and Kimi quota cards and missing-key guidance in
     { id: 'kimi', label: 'Kimi Code', kind: 'subscription', status: 'ok', windows: [{ id: '7d', usedPercent: 20 }] },
     { id: 'deepseek', label: 'DeepSeek API', kind: 'balance', status: 'no-key', balances: [], windows: [] },
   ]);
-  assert.match(text, /GLM Coding Plan/);
-  assert.match(text, /Kimi Code/);
-  assert.match(text, /DeepSeek API/);
+  // Provider names render as bundled brand logos, not text headings.
+  assert.doesNotMatch(text, /GLM Coding Plan|Kimi Code|DeepSeek API/);
   assert.match(text, /模型设置/);
   assert.equal(nodes.filter((n) => n.props.role === 'progressbar').length, 2);
   assert.equal(nodes.filter((n) => n.props['data-usage-provider']).length, 3);
@@ -174,40 +173,6 @@ test('without a selected model the panel asks for one instead of listing every a
   const { text } = render([], { modelSelection: null });
   assert.match(text, /选择模型后/);
   assert.doesNotMatch(text, /Kimi Code|GLM Coding Plan/);
-});
-
-test('an empty provider does not query every account', () => {
-  const ui = render([], { modelSelection: { next: { provider: '', model: 'pending' } } });
-  assert.match(ui.text, /选择模型后/);
-  assert.equal(ui.effects.length, 0);
-});
-
-test('switching providers cannot display the previous provider snapshot or its errors', () => {
-  const ui = render([{ id: 'kimi', label: 'Previous Kimi account', status: 'ok', windows: [{ id: '5h', usedPercent: 80 }] }], {
-    modelSelection: { next: { provider: 'zai', model: 'glm-selected' } },
-  }, false, { stateProvider: 'kimi-coding', error: 'Previous provider error', unsupported: 'previous' });
-  assert.match(ui.text, /glm-selected/);
-  assert.match(ui.text, /获取中/);
-  assert.doesNotMatch(ui.text, /Previous|已用 80%|暂不提供/);
-  assert.equal(ui.nodes.filter((node) => node.props['data-usage-provider']).length, 0);
-});
-
-test('last-used selection is used when the next model is not set', async () => {
-  const calls = [];
-  const ui = render([], { modelSelection: { lastUsed: { provider: 'deepseek-official', model: 'deepseek-selected' } } }, false, {
-    rpcCall: async (...args) => { calls.push(args); return { ok: true, value: { providers: [] } }; },
-  });
-  const cleanup = ui.effects[0]();
-  assert.match(ui.text, /deepseek-selected/);
-  assert.equal(calls[0][2].provider, 'deepseek-official');
-  cleanup();
-  await new Promise(setImmediate);
-});
-
-test('DeepSeek account login explains its unsupported quota instead of showing API-key balances', () => {
-  const ui = render([], { modelSelection: { next: { provider: 'deepseek-account', model: 'deepseek-login' } } }, false, { unsupported: 'deepseek-account' });
-  assert.match(ui.text, /暂不支持查询 DeepSeek 账号登录额度/);
-  assert.doesNotMatch(ui.text, /总可用余额|CNY|USD/);
 });
 
 test('an elapsed reset is labelled pending upstream refresh without fabricating a new time', () => {
@@ -247,4 +212,73 @@ test('refreshes do not overlap, can run again after completion, and cancel on un
   assert.equal(calls[1].args[3].aborted, true);
   assert.equal(ui.timers.size, 0);
   await new Promise(setImmediate);
+});
+
+test('the ChatGPT subscription card shows its badge, plan, credits and weekly window', () => {
+  const { nodes, text } = render([{
+    id: 'chatgpt', label: 'ChatGPT 订阅', kind: 'subscription', status: 'ok', fetchedAt: Date.now(),
+    plan: 'pro', credits: { unlimited: false, balance: '100' },
+    windows: [{ id: '7d', usedPercent: 33, resetAt: '2099-01-07T00:00:00Z' }],
+  }], { modelSelection: { next: { provider: 'openai-codex', model: 'gpt-6-astra' } } });
+  assert.ok(nodes.some((n) => n.type === 'img' && n.props.alt === 'GPT'));
+  assert.match(text, /套餐：Pro/);
+  assert.match(text, /积分余额：100/);
+  assert.match(text, /已用 33%/);
+  assert.match(text, /7 天窗口/);
+});
+
+test('the DeepSeek account card labels account wallets as account balance, not API balance', () => {
+  const { text, nodes } = render([{
+    id: 'deepseek-account', label: 'DeepSeek 账号', kind: 'balance', scope: 'account', status: 'ok', fetchedAt: Date.now(), windows: [],
+    balances: [{ currency: 'CNY', total: '123.45678901', granted: '3.45678901', toppedUp: '120' }],
+  }], { modelSelection: { next: { provider: 'deepseek-account', model: 'deepseek-flash' } } });
+  assert.match(text, /账号余额/);
+  assert.doesNotMatch(text, /API 余额/);
+  assert.ok(text.includes('CNY 123.46'));
+  assert.ok(nodes.some((n) => n.type === 'img' && n.props.alt === 'DeepSeek'));
+});
+
+test('a provider-specific login hint replaces the generic missing-key sentence', () => {
+  const { text } = render([{
+    id: 'chatgpt', label: 'ChatGPT 订阅', kind: 'subscription', status: 'no-key', windows: [],
+    message: '请先在模型设置中登录 ChatGPT 订阅',
+  }], { modelSelection: { next: { provider: 'openai-codex', model: 'gpt-6-astra' } } });
+  assert.match(text, /请先在模型设置中登录 ChatGPT 订阅/);
+  assert.doesNotMatch(text, /请先在模型设置中配置此账号/);
+});
+
+test('an empty provider does not query every account', () => {
+  const ui = render([], { modelSelection: { next: { provider: '', model: 'pending' } } });
+  assert.match(ui.text, /选择模型后/);
+  assert.equal(ui.effects.length, 0);
+});
+
+test('switching providers cannot display the previous provider snapshot or its errors', () => {
+  const ui = render([{ id: 'kimi', label: 'Previous Kimi account', status: 'ok', windows: [{ id: '5h', usedPercent: 80 }] }], {
+    modelSelection: { next: { provider: 'zai', model: 'glm-selected' } },
+  }, false, { stateProvider: 'kimi-coding', error: 'Previous provider error', unsupported: 'previous' });
+  assert.ok(ui.nodes.some((n) => n.type === 'img' && n.props.alt === 'GLM'));
+  assert.match(ui.text, /获取中/);
+  assert.doesNotMatch(ui.text, /Previous|已用 80%|暂不提供/);
+  assert.equal(ui.nodes.filter((node) => node.props['data-usage-provider']).length, 0);
+});
+
+test('last-used selection is used when the next model is not set', async () => {
+  const calls = [];
+  const ui = render([], { modelSelection: { lastUsed: { provider: 'deepseek-official', model: 'deepseek-selected' } } }, false, {
+    rpcCall: async (...args) => { calls.push(args); return { ok: true, value: { providers: [] } }; },
+  });
+  const cleanup = ui.effects[0]();
+  assert.ok(ui.nodes.some((n) => n.type === 'img' && n.props.alt === 'DeepSeek'));
+  assert.equal(calls[0][2].provider, 'deepseek-official');
+  cleanup();
+  await new Promise(setImmediate);
+});
+
+
+test('balances round half up to two decimals without binary floating point or negative zero', () => {
+  for (const [amount, expected] of [['1.005', '1.01'], ['-1.005', '-1.01'], ['-0.004', '0.00'], ['9.999', '10.00']]) {
+    const { text } = render([{ id: 'deepseek', label: 'DeepSeek API', kind: 'balance', status: 'ok', balances: [{ currency: 'CNY', total: amount, toppedUp: amount, granted: '0' }] }]);
+    assert.ok(text.includes(`CNY ${expected}`));
+  }
 });
